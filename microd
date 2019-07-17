@@ -1,3 +1,3 @@
  #!/usr/bin/bash
 
-ldc2 -dnostdlib -conf= -Isource -i=microd -L=-Wl,--gc-sections $@
+ldc2 -dnostdlib -conf= -Isource -i -boundscheck=off $@
