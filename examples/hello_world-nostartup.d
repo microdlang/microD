@@ -1,17 +1,17 @@
 import microd.types;
-import microd.startup;
 import microd.libd.syscall;
 
 enum STDOUT = 1;
 
-void main(string[] args) {
-    foreach(arg; args) {
-        write("arg: ");
-        write(arg);
-        write("\n");
+extern(C) void _start() {
+    version(linux) {
+        helloLinux();
+        syscall(Syscall.EXIT, 0);
     }
-    
-    write("Hello, world!\n");
+}
+
+void helloLinux() {
+    write("Hello, world!\n"); 
 }
 
 void write(string buf, usize fd = STDOUT) {
