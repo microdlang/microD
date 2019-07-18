@@ -2,110 +2,61 @@ module microd.sys.linux.syscall;
 
 version(linux):
 @nogc nothrow:
+pragma(inline, true):
+
 import microd.types;
+import ldc.llvmasm;
 public import microd.sys.linux.syslist.linux_x86_64;
 
-usize syscall(usize ident) {
-    usize ret;
+version (X86_64) {
+    template syscall(u64 ident) {
+        u64 syscall() {
+            return __asm!u64(
+                "syscall",
+                "={rax},{rax},~{rcx},~{r11}",
+                ident);
+        }
 
-    asm @nogc nothrow {
-        mov RAX, ident;
-        syscall;
-        mov ret, RAX;
+        u64 syscall(u64 n) {
+            return __asm!u64(
+                "syscall",
+                "={rax},{rax},{rdi},~{rcx},~{r11}",
+                ident, n);
+        }
+
+        u64 syscall(u64 n, u64 arg1) {
+            return __asm!u64(
+                "syscall",
+                "={rax},{rax},{rdi},{rsi},~{rcx},~{r11}",
+                ident, n, arg1);
+        }
+
+        u64 syscall(u64 n, u64 arg1, u64 arg2) {
+            return __asm!u64(
+                "syscall",
+                "={rax},{rax},{rdi},{rsi},{rdx},~{rcx},~{r11}",
+                ident, n, arg1, arg2);
+        }
+
+        u64 syscall(u64 n, u64 arg1, u64 arg2, u64 arg3) {
+            return __asm!u64(
+                "syscall",
+                "={rax},{rax},{rdi},{rsi},{rdx},{r10},~{rcx},~{r11}",
+                ident, n, arg1, arg2, arg3);
+        }
+
+        u64 syscall(u64 n, u64 arg1, u64 arg2, u64 arg3, u64 arg4) {
+            return __asm!u64(
+                "syscall",
+                "={rax},{rax},{rdi},{rsi},{rdx},{r10},{r8},~{rcx},~{r11}",
+                ident, n, arg1, arg2, arg3, arg4);
+        }
+
+        u64 syscall(u64 n, u64 arg1, u64 arg2, u64 arg3, u64 arg4, u64 arg5) {
+            return __asm!u64(
+                "syscall",
+                "={rax},{rax},{rdi},{rsi},{rdx},{r10},{r8},{r9},~{rcx},~{r11}",
+                ident, n, arg1, arg2, arg3, arg4, arg5);
+        }
     }
-
-    return ret;
-}
-
-usize syscall(usize ident, usize n) {
-    usize ret;
-
-    asm @nogc nothrow {
-        mov RAX, ident;
-        mov RDI, n[RBP];
-        syscall;
-        mov ret, RAX;
-    }
-
-    return ret;
-}
-
-usize syscall(usize ident, usize n, usize arg1) {
-    usize ret;
-
-    asm @nogc nothrow {
-        mov RAX, ident;
-        mov RDI, n[RBP];
-        mov RSI, arg1[RBP];
-        syscall;
-        mov ret, RAX;
-    }
-
-    return ret;
-}
-
-usize syscall(usize ident, usize n, usize arg1, usize arg2) {
-    usize ret;
-
-    asm @nogc nothrow {
-        mov RAX, ident;
-        mov RDI, n[RBP];
-        mov RSI, arg1[RBP];
-        mov RDX, arg2[RBP];
-        syscall;
-        mov ret, RAX;
-    }
-
-    return ret;
-}
-
-usize syscall(usize ident, usize n, usize arg1, usize arg2, usize arg3) {
-    usize ret;
-
-    asm @nogc nothrow {
-        mov RAX, ident;
-        mov RDI, n[RBP];
-        mov RSI, arg1[RBP];
-        mov RDX, arg2[RBP];
-        mov R10, arg3[RBP];
-        syscall;
-        mov ret, RAX;
-    }
-
-    return ret;
-}
-
-usize syscall(usize ident, usize n, usize arg1, usize arg2, usize arg3, usize arg4) {
-    usize ret;
-
-    asm @nogc nothrow {
-        mov RAX, ident;
-        mov RDI, n[RBP];
-        mov RSI, arg1[RBP];
-        mov RDX, arg2[RBP];
-        mov R10, arg3[RBP];
-        mov R8, arg4[RBP];
-        syscall;
-        mov ret, RAX;
-    }
-
-    return ret;
-}
-
-usize syscall(usize ident, usize n, usize arg1, usize arg2, usize arg3, usize arg4, usize arg5) {
-    usize ret;
-
-     asm @nogc nothrow {
-        mov RAX, ident;
-        mov RDI, n[RBP];
-        mov RSI, arg1[RBP];
-        mov RDX, arg2[RBP];
-        mov R10, arg3[RBP];
-        mov R8, arg4[RBP];
-        mov R9, arg5[RBP];
-        syscall;
-        mov ret, RAX;
-    }
-
-    return ret;
 }

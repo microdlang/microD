@@ -6,7 +6,7 @@ enum STDOUT = 1;
 extern(C) void _start() {
     version(linux) {
         helloLinux();
-        syscall(Syscall.EXIT, 0);
+        syscall!EXIT(0);
     }
 }
 
@@ -15,5 +15,5 @@ void helloLinux() {
 }
 
 void write(string buf, usize fd = STDOUT) {
-    syscall(Syscall.WRITE, fd, cast(usize) buf.ptr, buf.length);
+    syscall!WRITE(fd, cast(usize) buf.ptr, buf.length);
 }

@@ -15,5 +15,5 @@ void main(string[] args) {
 }
 
 void write(string buf, usize fd = STDOUT) {
-    syscall(Syscall.WRITE, fd, cast(usize) buf.ptr, buf.length);
+    syscall!WRITE(fd, cast(usize) buf.ptr, buf.length);
 }

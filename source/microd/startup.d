@@ -1,8 +1,5 @@
 module microd.startup;
 import microd.types;
-import microd.libd.syscall;
-import microd.libd.mem;
-import microd.libd.string;
 
 @nogc nothrow:
 
@@ -27,6 +24,9 @@ version(X86_64) {
 } else static assert(0, "microd startup is not implemented on this architecure");
 
 private extern(C) void __microd_start(i32 argc, char** argv, char** envp) {
+    import microd.libd.mem : alloca;
+    import microd.libd.string : strlen;
+
     char[][] args = (cast(char[]*) alloca(argc * (char[]).sizeof))[0 .. argc];
 
     foreach(i, ref arg; args) {
@@ -38,9 +38,11 @@ private extern(C) void __microd_start(i32 argc, char** argv, char** envp) {
 }
 
 private void __microd_exit(i32 exitCode) {
+    import microd.libd.syscall;
+
     version(X86_64) {
         version(linux) {
-            syscall(Syscall.EXIT, exitCode);
+            syscall!EXIT(exitCode);
         }
     }
 }
