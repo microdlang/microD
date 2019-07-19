@@ -38,7 +38,7 @@ private extern(C) void __microd_start(i32 argc, char** argv, char** envp) {
 }
 
 private void __microd_exit(i32 exitCode) {
-    import microd.libd.syscall;
+    import microd.libd.syscall: EXIT, syscall;
 
     version(X86_64) {
         version(linux) {
